@@ -73,7 +73,8 @@ class DulwichGitClient(GitClient):
         unstaged_files = (fn.decode() for fn in get_unstaged_changes(repo.open_index(), local_path))
         untracked_files = porcelain.get_untracked_paths(local_path, local_path, repo.open_index())
         files = (file for file in chain(unstaged_files, untracked_files) if not ignore_mgr.is_ignored(file))
-        repo.stage(files)
+        if files:
+            porcelain.add(repo, paths=files)
 
     def unstage_all(self, local_path: str) -> None:
         repo = Repo(local_path)
