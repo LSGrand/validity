@@ -17,7 +17,10 @@ class NetmikoPoller(ConsecutivePoller):
     driver_factory = ConnectHandler
 
     def connect(self, credentials):
-        driver = super().connect(credentials)
+        creds = credentials.copy()
+        creds["ssh_config_file"] = "~/.ssh/config"
+
+        driver = super().connect(creds)
         if credentials.get("device_type") == "hp_comware":
             output = driver.send_command_timing('_cmdline-mode on', strip_prompt=False, strip_command=False)
             if 'continue' in output or 'Y/N' in output:
